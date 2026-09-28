@@ -4,9 +4,6 @@ import '../models/product.dart';
 import '../theme/app_colors.dart';
 import 'payment_page.dart';
 
-/// หน้าใบเสร็จหลังชำระเงินสำเร็จ แสดงเลขที่คำสั่งซื้อ รายการสินค้า
-/// และยอดรวม (+เงินทอนถ้าจ่ายด้วยเงินสด) แล้วปิดตัวเองกลับไปหน้าเมนู
-/// อัตโนมัติหลังนับถอยหลังครบ
 class ReceiptPage extends StatefulWidget {
   final List<CartItem> items;
   final int orderNumber;
@@ -34,8 +31,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
   String get _methodLabel {
     switch (widget.method) {
-      case PaymentMethod.card:
-        return 'บัตรเครดิต/เดบิต';
       case PaymentMethod.cash:
         return 'เงินสด';
       case PaymentMethod.mobilePay:
@@ -63,10 +58,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
 
   void _finish() {
     if (!mounted) return;
-    // ปิดหน้านี้ด้วยผลสำเร็จ (true) — จะไปสิ้นสุดที่ Navigator.push ของ
-    // PaymentPage ที่รออยู่ ซึ่ง PaymentPage จะปิดตัวเองต่อ แล้วไปสิ้นสุด
-    // ที่ Navigator.push ของ MenuPage อีกที ทำให้ย้อนกลับไปหน้าเมนูได้เอง
-    // โดยไม่ต้องมีการนำทางไปหน้า "intro" แยกต่างหาก
     Navigator.of(context).pop(true);
   }
 

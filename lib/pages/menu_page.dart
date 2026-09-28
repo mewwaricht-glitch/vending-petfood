@@ -7,11 +7,8 @@ import '../widgets/product_grid_item.dart';
 import '../widgets/cart_bar.dart';
 import 'payment_page.dart';
 
-/// จำนวนวินาทีที่ปล่อยให้ไม่มีการแตะหน้าจอ ก่อนตู้จะเคลียร์ตะกร้าอัตโนมัติ
-const int kIdleSecondsTotal = 30;
+const int IdleSecondsTotal = 30;
 
-/// หน้าเมนูหลักของตู้ — จุดที่ลูกค้าเลือกหมวดหมู่, เลือกสินค้าใส่ตะกร้า,
-/// และกดชำระเงิน เป็นหน้าจอแรกที่แอปแสดง (ดู main.dart)
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
 
@@ -20,10 +17,10 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-  String _selectedCategory = MenuService.categories[0]; // ค่าเริ่มต้น: อาหารแมว
+  String _selectedCategory = MenuService.categories[0];
   final List<CartItem> _cart = [];
   Timer? _idleTimer;
-  int _idleSecondsLeft = kIdleSecondsTotal;
+  int _idleSecondsLeft = IdleSecondsTotal;
 
   @override
   void initState() {
@@ -36,11 +33,10 @@ class _MenuPageState extends State<MenuPage> {
     super.dispose();
   }
 
-  // ---- การจัดการ idle timer / รีเซ็ตอัตโนมัติเมื่อไม่มีการใช้งาน --------
+// ---- idle timer --------
 
-  /// เรียกทุกครั้งที่มีการโต้ตอบกับหน้าจอ เพื่อรีเซ็ตนาฬิกานับถอยหลัง
   void _touch() {
-    _idleSecondsLeft = kIdleSecondsTotal;
+    _idleSecondsLeft = IdleSecondsTotal;
     if (_cart.isNotEmpty && _idleTimer == null) {
       _startIdleTimer();
     }
@@ -64,29 +60,23 @@ class _MenuPageState extends State<MenuPage> {
     if (_cart.isEmpty) {
       _idleTimer?.cancel();
       _idleTimer = null;
-      _idleSecondsLeft = kIdleSecondsTotal;
+      _idleSecondsLeft = IdleSecondsTotal;
     }
   }
 
-  // หมดเวลาขณะที่ลูกค้ายังเลือกสินค้าอยู่: ล้างตะกร้าทันทีแล้วกลับไป
-  // หน้าเมนูเริ่มต้น (ตู้นี้ไม่มีหน้าต้อนรับให้เด้งกลับไปแล้ว — หน้านี้
-  // คือหน้าแรกของทั้งแอป)
   void _resetOnTimeout() {
     setState(() {
       _cart.clear();
       _selectedCategory = MenuService.categories[0];
-      _idleSecondsLeft = kIdleSecondsTotal;
+      _idleSecondsLeft = IdleSecondsTotal;
     });
   }
-
-  // ---- การแก้ไขตะกร้าสินค้า -----------------------------------------
 
   void _selectCategory(String category) {
     setState(() => _selectedCategory = category);
     _touch();
   }
 
-  /// เพิ่มสินค้าลงตะกร้า (หรือเพิ่มจำนวนถ้ามีอยู่แล้ว) เมื่อแตะที่การ์ดสินค้า
   void _toggleProduct(Product product) {
     setState(() {
       final existingIndex = _cart.indexWhere((c) => c.product.id == product.id);
@@ -100,7 +90,6 @@ class _MenuPageState extends State<MenuPage> {
     _touch();
   }
 
-  /// ปรับจำนวนสินค้าในตะกร้าทีละ 1 (delta = +1 เพิ่ม, -1 ลด)
   void _changeQty(CartItem item, int delta) {
     setState(() {
       final newQty = item.quantity + delta;
@@ -129,7 +118,6 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  /// เปิดหน้าชำระเงินและรอผลลัพธ์กลับมา
   Future<void> _checkout() async {
     _idleTimer?.cancel();
     _idleTimer = null;
@@ -141,11 +129,8 @@ class _MenuPageState extends State<MenuPage> {
     if (!mounted) return;
 
     if (paid == true) {
-      // PaymentPage -> ReceiptPage จะปิดตัวเองย้อนกลับมาที่นี่โดยอัตโนมัติ
-      // แค่ล้างตะกร้าตอนนี้เพราะคำสั่งซื้อเสร็จสมบูรณ์แล้ว
       setState(() => _cart.clear());
     } else {
-      // ผู้ใช้กดยกเลิกการชำระเงิน กลับมาเลือกสินค้าต่อได้
       _touch();
     }
   }
@@ -158,8 +143,6 @@ class _MenuPageState extends State<MenuPage> {
         )
         .quantity;
   }
-
-  // ---- ส่วนสร้าง UI -----------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -190,9 +173,23 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
+  Widget _buildHeader() {
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(20, 12, 20, 8),
+      child: Center(
+        child: Text(
+          'PET FOOD',
+          style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w900,
+              color: AppColors.dark,
+              letterSpacing: 1),
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody() {
-    // อาหารแมวมีแยกเม็ด/เปียกอยู่แล้วในข้อมูล — แสดงเป็น 2 หัวข้อ
-    // แยกกันตามดีไซน์ต้นแบบ หมวดหมู่อื่นแสดงเป็นกริดเดียวตามปกติ
     if (_selectedCategory == 'อาหารแมว') {
       return ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -227,8 +224,6 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  /// กริดสินค้าที่เลื่อนแนวนอนได้ ใช้ซ้ำทั้งในโหมดอาหารแมว (2 แถว) และ
-  /// หมวดหมู่อื่น (1 แถว)
   Widget _buildProductGrid(List<Product> products) {
     return SizedBox(
       height: 300,
@@ -257,23 +252,6 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
-  Widget _buildHeader() {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(20, 12, 20, 8),
-      child: Center(
-        child: Text(
-          'PET FOOD',
-          style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
-              color: AppColors.dark,
-              letterSpacing: 1),
-        ),
-      ),
-    );
-  }
-
-  /// แท็บหมวดหมู่สินค้าที่เลื่อนดูได้ในแนวนอน ด้านบนของหน้าเมนู
   Widget _buildCategoryTabs() {
     return SizedBox(
       height: 50,

@@ -1,24 +1,12 @@
-/// บริการ (service) สำหรับสร้างข้อมูล QR Code พร้อมเพย์ (PromptPay)
-///
-/// รวม logic การเข้ารหัสข้อมูลตามมาตรฐาน EMVCo ไว้ในที่เดียว แยกออกจาก
-/// หน้าจอ (pages) เพื่อให้หน้าจอไม่ต้องยุ่งกับรายละเอียดการเข้ารหัส
-/// แค่เรียก [PaymentService.generatePromptPayPayload] แล้วเอาผลลัพธ์
-/// (ข้อความ payload) ไปสร้างเป็น QR image ต่อได้เลย
 class PaymentService {
-  PaymentService._(); // ไม่ต้องสร้าง instance ใช้งานแบบ static เท่านั้น
+  PaymentService._();
 
-  /// เบอร์พร้อมเพย์เริ่มต้นที่ใช้ทดสอบ (ของจริงควรตั้งค่าใน config/payment_config.dart)
   static const String merchantPromptPayId = '0647481396';
 
-  /// สร้างข้อความ (payload) สำหรับ QR พร้อมเพย์ ตามมาตรฐาน EMVCo
-  ///
-  /// [promptPayId] ต้องเป็นเบอร์มือถือ 10 หลักที่ขึ้นต้นด้วย 0
-  /// [amount] คือยอดเงินที่ต้องชำระ (บาท)
-  /// เมื่อสแกนด้วยแอปธนาคารใดก็ได้ จะขึ้นชื่อผู้รับ+ยอดเงินให้อัตโนมัติ
   static String generatePromptPayPayload({
     required String promptPayId,
     required num amount,
-    String merchantName = 'PET BOX',
+    String merchantName = 'PET FOOD',
     String merchantCity = 'BANGKOK',
   }) {
     final digits = promptPayId.replaceAll(RegExp(r'[^0-9]'), '');
@@ -51,13 +39,11 @@ class PaymentService {
     return withCrcHeader + _crc16Ccitt(withCrcHeader);
   }
 
-  /// ห่อค่า [id]/[value] ให้อยู่ในรูปแบบ TLV (Tag-Length-Value) ตามสเปก EMVCo
   static String _tlv(String id, String value) {
     final len = value.length.toString().padLeft(2, '0');
     return '$id$len$value';
   }
 
-  /// คำนวณค่า checksum CRC16-CCITT ที่ต้องแนบท้าย payload ของ QR พร้อมเพย์
   static String _crc16Ccitt(String data) {
     const poly = 0x1021;
     int crc = 0xFFFF;

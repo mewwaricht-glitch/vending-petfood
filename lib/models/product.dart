@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// ข้อมูลสินค้า 1 ชิ้นที่ขายในตู้ (เช่น อาหารแมว 1 ซอง)
-///
-/// เป็น "model" ล้วน ๆ ไม่มี logic การแสดงผลหรือ state ใด ๆ
-/// ใช้เก็บ/ส่งต่อข้อมูลระหว่าง service กับหน้าจอ (pages/widgets)
 class Product {
   final String id;
   final String name;

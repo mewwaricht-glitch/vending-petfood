@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
-/// ผลลัพธ์ของการจ่ายด้วยเงินสด: จำนวนเงินที่หยอดเข้ามา และเงินทอนที่ต้องจ่ายคืน
 class CashPaymentResult {
   final int inserted;
   final int change;
   const CashPaymentResult({required this.inserted, required this.change});
 }
 
-/// หน้าจอจำลองเครื่องรับเงินสด (หยอดแบงค์/เหรียญ) ของตู้
-///
-/// ลูกค้ากดปุ่มแต่ละหน่วยเงินเพื่อ "หยอด" ทีละใบ/เหรียญ จนกว่าจะครบยอด
-/// ที่ต้องชำระ ([amountDue]) จากนั้นกดยืนยันเพื่อให้เครื่องคำนวณและ
-/// "ทอนเงิน" คืนให้ (ถ้ามี)
 class CashPaymentPage extends StatefulWidget {
   final int amountDue;
 
@@ -23,7 +17,6 @@ class CashPaymentPage extends StatefulWidget {
 }
 
 class _CashPaymentPageState extends State<CashPaymentPage> {
-  // ธนบัตรและเหรียญไทย เรียงจากใบใหญ่ไปเล็ก
   static const List<_Denomination> _banknotes = [
     _Denomination(100, isNote: true),
     _Denomination(50, isNote: true),
@@ -49,7 +42,6 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
   bool get _canConfirm => _inserted >= widget.amountDue;
 
   void _insert(int value) {
-    // ไม่รับเงินเพิ่มเติมถ้าถึงยอดราคาแล้ว
     if (_inserted >= widget.amountDue) return;
     setState(() => _counts[value] = (_counts[value] ?? 0) + 1);
   }
@@ -68,8 +60,6 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
     });
   }
 
-  /// แบ่งจำนวนเงินทอนออกเป็นหน่วยธนบัตร/เหรียญมาตรฐาน แบบ greedy
-  /// (หน่วยใหญ่สุดก่อน) เสมือนตู้ทอนเงินจริง
   List<MapEntry<int, int>> _changeBreakdown(int amount) {
     const allDenoms = [100, 50, 20, 10, 5, 2, 1];
     final result = <MapEntry<int, int>>[];
@@ -89,7 +79,6 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
       _confirming = true;
       _change = _inserted - widget.amountDue;
     });
-    // จำลองเวลาที่เครื่องนับเหรียญ/ธนบัตรและทอนเงิน
     await Future.delayed(Duration(milliseconds: _change > 0 ? 900 : 400));
     if (!mounted) return;
     setState(() {
@@ -135,7 +124,7 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
             icon: const Icon(Icons.arrow_back, color: AppColors.dark, size: 26),
             onPressed: (_confirming || _done)
                 ? null
-                : () => Navigator.of(context).pop(null), // ยกเลิก: คืนเงินที่หยอดไปทั้งหมด
+                : () => Navigator.of(context).pop(null),
           ),
           const Text(
             'หยอดเหรียญ/ธนบัตร',
@@ -146,7 +135,6 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
     );
   }
 
-  /// หน้าจอหลักระหว่างหยอดเงิน: สรุปยอด + ปุ่มหยอดแต่ละหน่วยเงิน
   Widget _buildInsertUi() {
     return Column(
       children: [
@@ -384,15 +372,12 @@ class _CashPaymentPageState extends State<CashPaymentPage> {
   }
 }
 
-/// หน่วยเงิน 1 ชนิด (เช่น แบงค์ 100 หรือเหรียญ 5) ที่ปุ่มหยอดเงินอ้างอิงถึง
 class _Denomination {
   final int value;
   final bool isNote;
   const _Denomination(this.value, {required this.isNote});
 }
 
-/// ปุ่มหยอดเงิน 1 หน่วย พร้อมตัวเลขนับจำนวนที่หยอดไปแล้ว และปุ่ม +/-
-/// เพื่อแก้ไขจำนวนก่อนยืนยัน
 class _DenomButton extends StatelessWidget {
   final _Denomination denomination;
   final int count;

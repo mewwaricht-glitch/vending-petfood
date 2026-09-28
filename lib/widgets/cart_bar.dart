@@ -2,24 +2,12 @@ import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../theme/app_colors.dart';
 
-/// แถบตะกร้าสินค้าด้านล่างของหน้าเมนู (MenuPage)
-///
-/// แสดงรายการสินค้าที่เลือกไว้แบบเลื่อนแนวนอน, เวลานับถอยหลังก่อนรีเซ็ต
-/// (idle timeout), ยอดรวม, และปุ่ม "ล้างทั้งหมด" / "ชำระเงิน"
-/// วิดเจ็ตนี้ไม่มี state ของตัวเอง (StatelessWidget) — MenuPage เป็นคนคุม
-/// ข้อมูลตะกร้าทั้งหมด แล้วส่ง callback เข้ามาให้เรียกตอนผู้ใช้กดปุ่มต่าง ๆ
 class CartBar extends StatelessWidget {
   final List<CartItem> items;
-
-  /// จำนวนวินาทีที่เหลือก่อนตู้จะรีเซ็ตกลับเมนูเริ่มต้นเพราะไม่มีการกดหน้าจอ
   final int idleSecondsLeft;
   final VoidCallback onClearAll;
   final VoidCallback onCheckout;
-
-  /// เรียกเมื่อกดปุ่ม +/- เพื่อเพิ่ม/ลดจำนวนสินค้าในตะกร้า (delta = +1 หรือ -1)
   final void Function(CartItem item, int delta) onChangeQty;
-
-  /// เรียกเมื่อกดปุ่ม "X" เพื่อลบสินค้ารายการนั้นออกจากตะกร้าทั้งหมด
   final void Function(CartItem item) onRemove;
 
   const CartBar({
@@ -50,7 +38,6 @@ class CartBar extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // แถวชิปแสดงสินค้าในตะกร้า (เลื่อนแนวนอนได้) — ซ่อนถ้าตะกร้าว่าง
             if (items.isNotEmpty)
               SizedBox(
                 height: 92,
@@ -70,7 +57,6 @@ class CartBar extends StatelessWidget {
                   },
                 ),
               ),
-            // ข้อความนับถอยหลังก่อนตู้จะรีเซ็ตอัตโนมัติ
             if (items.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 4),
@@ -79,7 +65,6 @@ class CartBar extends StatelessWidget {
                   style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                 ),
               ),
-            // แถวล่างสุด: ปุ่มล้างตะกร้า, ยอดรวม, ปุ่มชำระเงิน
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
               child: Row(
@@ -103,7 +88,7 @@ class CartBar extends StatelessWidget {
                   const Spacer(),
                   Text(
                     'ทั้งหมด $totalCount ชิ้น ${_formatPrice(totalPrice)} บาท',
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.right,
                     style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: AppColors.dark),
                   ),
                   const Spacer(),
@@ -126,7 +111,6 @@ class CartBar extends StatelessWidget {
     );
   }
 
-  /// จัดรูปแบบตัวเลขราคาให้มีจุลภาคคั่นหลักพัน เช่น 1234 -> "1,234"
   static String _formatPrice(int price) {
     final s = price.toString();
     final buf = StringBuffer();
@@ -138,7 +122,6 @@ class CartBar extends StatelessWidget {
   }
 }
 
-/// การ์ดเล็ก ๆ 1 ใบในแถบตะกร้า แสดงชื่อสินค้า ราคา และปุ่มปรับจำนวน +/-
 class _CartChip extends StatelessWidget {
   final CartItem item;
   final VoidCallback onIncrement;

@@ -5,14 +5,8 @@ import 'cash_payment_page.dart';
 import 'qr_payment_page.dart';
 import 'receipt_page.dart';
 
-/// ช่องทางการชำระเงินที่ตู้รองรับ
-enum PaymentMethod { card, cash, mobilePay }
+enum PaymentMethod { cash, mobilePay }
 
-/// หน้าสรุปคำสั่งซื้อและเลือกช่องทางชำระเงิน
-///
-/// รับรายการสินค้าที่ลูกค้าเลือกไว้ ([items]) มาแสดงสรุปยอด แล้วให้เลือก
-/// จ่ายด้วยเงินสดหรือ QR พร้อมเพย์ จากนั้นพาไปหน้าที่เกี่ยวข้อง
-/// (CashPaymentPage / QrPaymentPage) และสุดท้ายไปหน้าใบเสร็จ (ReceiptPage)
 class PaymentPage extends StatefulWidget {
   final List<CartItem> items;
 
@@ -27,39 +21,27 @@ class _PaymentPageState extends State<PaymentPage> {
 
   int get total => widget.items.fold(0, (sum, i) => sum + i.lineTotal);
 
-  /// จัดการขั้นตอนการจ่ายเงินตามช่องทางที่เลือก แล้วต่อไปหน้าใบเสร็จเมื่อสำเร็จ
   Future<void> _pay(PaymentMethod method) async {
     switch (method) {
       case PaymentMethod.cash:
-        // เครื่องรับเงินสดจริง: ลูกค้าหยอดแบงค์/เหรียญ เครื่องรอจนครบยอด
-        // แล้วทอนเงินคืนถ้ามีเงินทอน
         final result = await Navigator.of(context).push<CashPaymentResult>(
           MaterialPageRoute(builder: (_) => CashPaymentPage(amountDue: total)),
         );
-        if (!mounted || result == null) return; // ยกเลิก -> คืนเงินทั้งหมด อยู่หน้านี้ต่อ
+        if (!mounted || result == null) return;
         await _finishOrder(method, changeGiven: result.change);
         return;
 
       case PaymentMethod.mobilePay:
-        // QR พร้อมเพย์จริงที่สแกนได้ ตรงกับยอดคำสั่งซื้อพอดี
         final confirmed = await Navigator.of(context).push<bool>(
           MaterialPageRoute(builder: (_) => QrPaymentPage(amount: total)),
         );
-        if (!mounted || confirmed != true) return; // ยกเลิกหรือหมดเวลา
+        if (!mounted || confirmed != true) return;
         await _finishOrder(method);
         return;
 
-      case PaymentMethod.card:
-        setState(() => _processing = true);
-        // จำลองการติดต่อเครื่องรูดบัตร/payment gateway
-        await Future.delayed(const Duration(seconds: 2));
-        if (!mounted) return;
-        await _finishOrder(method);
-        return;
     }
   }
 
-  /// สร้างเลขที่คำสั่งซื้อและพาไปหน้าใบเสร็จ จากนั้นรายงานผลกลับไปยัง MenuPage
   Future<void> _finishOrder(PaymentMethod method, {int changeGiven = 0}) async {
     setState(() => _processing = true);
     final orderNumber = 100 + DateTime.now().second;
@@ -76,8 +58,6 @@ class _PaymentPageState extends State<PaymentPage> {
     );
 
     if (!mounted) return;
-    // ไม่ว่าหน้าใบเสร็จจะคืนค่าอะไรมา ถือว่าคำสั่งซื้อเสร็จสิ้นแล้ว:
-    // แจ้งผลสำเร็จกลับไปยังหน้าที่เรียกมา (MenuPage)
     Navigator.of(context).pop(success ?? true);
   }
 
@@ -85,9 +65,7 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: _processing
-          ? _buildProcessing()
-          : SafeArea(
+      body: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -205,25 +183,8 @@ class _PaymentPageState extends State<PaymentPage> {
       ],
     );
   }
-
-  Widget _buildProcessing() {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(color: AppColors.tulip),
-          SizedBox(height: 24),
-          Text('กำลังดำเนินการชำระเงิน...', style: TextStyle(fontSize: 16)),
-          SizedBox(height: 8),
-          Text('กรุณาอย่าถอดบัตร', style: TextStyle(fontSize: 13, color: Colors.grey)),
-        ],
-      ),
-    );
-  }
 }
 
-/// การ์ดปุ่มเลือกช่องทางชำระเงิน 1 ใบ (เช่น "เงินสด", "QR พร้อมเพย์")
-/// มี animation ตอนกดค้าง (เปลี่ยนสีพื้นหลัง/ขอบ) เพื่อ feedback ให้ผู้ใช้
 class _PaymentOptionCard extends StatefulWidget {
   final String label;
   final VoidCallback onTap;

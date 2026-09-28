@@ -2,17 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../theme/app_colors.dart';
 
-/// การ์ดแสดงสินค้า 1 ชิ้นในกริดของหน้าเมนู (MenuPage)
-///
-/// แตะที่การ์ดเพื่อเพิ่มสินค้าลงตะกร้า ถ้าสินค้าหมด ([remaining] <= 0)
-/// การ์ดจะถูกทำให้จางลงและแตะไม่ได้
 class ProductGridItem extends StatelessWidget {
   final Product product;
-
-  /// true = สินค้านี้ถูกเลือกอยู่ในตะกร้าแล้วอย่างน้อย 1 ชิ้น
   final bool selected;
-
-  /// จำนวนที่ยังหยิบเพิ่มได้ (สต๊อกคงเหลือ หักด้วยจำนวนที่อยู่ในตะกร้าแล้ว)
   final int remaining;
   final VoidCallback onTap;
 
@@ -59,7 +51,6 @@ class ProductGridItem extends StatelessWidget {
                     style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.tomato),
                   ),
                 ),
-                _buildActionButton(),
               ],
             ),
           ],
@@ -68,28 +59,6 @@ class ProductGridItem extends StatelessWidget {
     );
   }
 
-  /// ปุ่มวงกลมมุมขวาล่างของการ์ด: เครื่องหมาย "+" ปกติ หรือ "x" ถ้าของหมด
-  Widget _buildActionButton() {
-    if (_isOutOfStock) {
-      return Container(
-        width: 24,
-        height: 24,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(color: AppColors.textGrey, shape: BoxShape.circle),
-        child: const Icon(Icons.close, size: 14, color: Colors.white),
-      );
-    }
-    return Container(
-      width: 24,
-      height: 24,
-      alignment: Alignment.center,
-      decoration: const BoxDecoration(color: AppColors.apples, shape: BoxShape.circle),
-      child: const Icon(Icons.add, size: 16, color: Colors.white),
-    );
-  }
-
-  /// กรอบรูปภาพสินค้า พร้อมกรอบไฮไลท์เมื่อถูกเลือก, เครื่องหมายถูกมุมขวาบน,
-  /// และป้าย "หมด" ทับกึ่งกลางถ้าสินค้าหมดสต๊อก
   Widget _buildImageCard() {
     return Stack(
       children: [
@@ -137,7 +106,6 @@ class ProductGridItem extends StatelessWidget {
     );
   }
 
-  /// แสดงรูปภาพของสินค้า ถ้าไม่มีรูปภาพ/โหลดไม่ได้ ให้แสดงไอคอน fallback แทน
   Widget _buildImage() {
     if (product.imagePath.isEmpty) return _buildFallbackIcon();
 
@@ -153,8 +121,6 @@ class ProductGridItem extends StatelessWidget {
       child: Icon(Icons.image_not_supported, size: 36, color: Colors.grey),
     );
   }
-
-  /// จัดรูปแบบตัวเลขราคาให้มีจุลภาคคั่นหลักพัน เช่น 1234 -> "1,234"
   static String _formatPrice(int price) {
     final digits = price.toString();
     final buffer = StringBuffer();

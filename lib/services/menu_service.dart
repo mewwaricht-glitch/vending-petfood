@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 
-/// บริการ (service) ที่รวมข้อมูลสินค้าทั้งหมดของตู้ไว้ที่เดียว
-///
-/// เก็บเป็นข้อมูลคงที่ (mock data) ไว้ในไฟล์นี้ เพื่อให้หน้าจอต่าง ๆ
-/// (pages) เรียกใช้งานได้ง่าย โดยไม่ต้องรู้ว่าข้อมูลมาจากไหน
-/// ถ้าในอนาคตต้องการเปลี่ยนไปดึงข้อมูลจาก API จริง ก็แก้แค่ไฟล์นี้
-/// ไฟล์เดียว หน้าจออื่นไม่ต้องแก้
 class MenuService {
-  MenuService._(); // ไม่ต้องสร้าง instance ใช้งานแบบ static เท่านั้น
+  MenuService._();
 
-  /// รายชื่อหมวดหมู่สินค้าทั้งหมด (ใช้แสดงเป็นแท็บด้านบนของหน้าเมนู)
   static const List<String> categories = [
     'อาหารแมว',
     'อาหารสุนัข',
@@ -18,7 +11,6 @@ class MenuService {
     'นมแพะ',
   ];
 
-  /// อาหารแมวแบบเม็ด (dry)
   static const List<Product> dryCatItems = [
     Product(
       id: 'cat_dry_001',
@@ -126,7 +118,6 @@ class MenuService {
     ),
   ];
 
-  /// อาหารแมวแบบเปียก (wet)
   static const List<Product> wetCatItems = [
     Product(
       id: 'cat_wet_001',
@@ -202,27 +193,6 @@ class MenuService {
     ),
   ];
 
-  /// นมแพะสำหรับแมว/สัตว์เลี้ยง
-  static const List<Product> milkItems = [
-    Product(
-      id: 'cat_milk_001',
-      name: 'I Love Smart Heart นมแพะสดสเตอริไลส์',
-      size: '70 มล.',
-      price: 25,
-      imagePath: 'assets/cat/4.png',
-      category: 'นมแพะ',
-    ),
-    Product(
-      id: 'cat_milk_002',
-      name: 'Pramy นมแพะสเตอริไลส์',
-      size: '60 มล.',
-      price: 20,
-      imagePath: 'assets/cat/18.png',
-      category: 'นมแพะ',
-    ),
-  ];
-
-  /// อาหารสุนัข
   static const List<Product> dogItems = [
     Product(
       id: 'dog_001',
@@ -274,7 +244,25 @@ class MenuService {
     ),
   ];
 
-  /// อาหารแฮมสเตอร์
+  static const List<Product> milkItems = [
+    Product(
+      id: 'cat_milk_001',
+      name: 'I Love Smart Heart นมแพะสดสเตอริไลส์',
+      size: '70 มล.',
+      price: 25,
+      imagePath: 'assets/cat/4.png',
+      category: 'นมแพะ',
+    ),
+    Product(
+      id: 'cat_milk_002',
+      name: 'Pramy นมแพะสเตอริไลส์',
+      size: '60 มล.',
+      price: 20,
+      imagePath: 'assets/cat/18.png',
+      category: 'นมแพะ',
+    ),
+  ];
+
   static const List<Product> hamsterItems = [
     Product(
       id: 'hamster_001',
@@ -302,7 +290,6 @@ class MenuService {
     ),
   ];
 
-  /// คืนรายการสินค้าทั้งหมดที่อยู่ในหมวดหมู่ [category] ที่ระบุ
   static List<Product> getProductsByCategory(String category) {
     final allProducts = [
       ...dryCatItems,

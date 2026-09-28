@@ -4,15 +4,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../theme/app_colors.dart';
 import '../services/payment_service.dart';
 
-/// แสดง QR พร้อมเพย์จริงที่สแกนได้สำหรับยอด [amount] บาท
-/// แอปธนาคารของฝั่งลูกค้าจะเติมชื่อผู้รับเงินและยอดเงินให้อัตโนมัติ
-///
-/// หน้าจอนี้เพียงลำพังไม่สามารถรู้แน่ชัดได้ว่ามีการโอนเงินเข้ามาจริง —
-/// ต้องมีระบบหลังบ้านที่คอยตรวจสอบความเคลื่อนไหวบัญชี/พร้อมเพย์ เมื่อยัง
-/// ไม่มีระบบนั้น ลูกค้า (หรือผู้ดูแลตู้ตอนทดสอบ) จะเป็นคนกดยืนยันเองว่า
-/// โอนเงินเสร็จแล้ว เหมือนตู้ไร้คนดูแลขนาดเล็กหลายที่ที่ใช้วิธีให้เจ้าหน้าที่
-/// ตรวจสอบ ถ้าจะเชื่อมกับระบบจริง ให้แก้ไขที่ [_confirmPaymentReceived]
-/// ให้เรียกไปเช็กสถานะกับ payment gateway จริงแทน
 class QrPaymentPage extends StatefulWidget {
   final int amount;
 
@@ -57,8 +48,6 @@ class _QrPaymentPageState extends State<QrPaymentPage> {
     super.dispose();
   }
 
-  /// ใช้แทนการตรวจสอบสถานะการชำระเงินจริง ให้เปลี่ยนไปเรียก backend จริง
-  /// ที่เชื่อมกับการแจ้งเตือนพร้อมเพย์ของธนาคารเมื่อมีระบบพร้อมใช้งาน
   Future<void> _confirmPaymentReceived() async {
     setState(() => _checking = true);
     await Future.delayed(const Duration(milliseconds: 900));
@@ -119,7 +108,7 @@ class _QrPaymentPageState extends State<QrPaymentPage> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'หมดเวลาใน $_secondsLeft วินาที',
+                      'หมดเวลาในอีก $_secondsLeft วินาที',
                       style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
                     ),
                     const Spacer(),
