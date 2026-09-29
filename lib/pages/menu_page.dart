@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../services/menu_service.dart';
 import '../models/product.dart';
 import '../theme/app_colors.dart';
-import '../widgets/product_grid_item.dart';
+import '../widgets/category_tab.dart';
+import '../widgets/product_grid.dart';
 import '../widgets/cart_bar.dart';
 import 'payment_page.dart';
 
@@ -225,30 +226,10 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Widget _buildProductGrid(List<Product> products) {
-    return SizedBox(
-      height: 300,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          final product = products[index];
-          final inCartQty = _inCartQty(product);
-          final remaining = product.stock - inCartQty;
-
-          return SizedBox(
-            width: 190,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: ProductGridItem(
-                product: product,
-                selected: inCartQty > 0,
-                remaining: remaining,
-                onTap: () => _toggleProduct(product),
-              ),
-            ),
-          );
-        },
-      ),
+    return ProductGrid(
+      products: products,
+      inCartQty: _inCartQty,
+      onToggle: _toggleProduct,
     );
   }
 
@@ -266,19 +247,10 @@ class _MenuPageState extends State<MenuPage> {
             final category = MenuService.categories[index];
             final selected = category == _selectedCategory;
 
-            return GestureDetector(
+            return CategoryTab(
+              category: category,
+              selected: selected,
               onTap: () => _selectCategory(category),
-              child: Center(
-                child: AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 150),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                    color: selected ? AppColors.apples : Colors.grey,
-                  ),
-                  child: Text(category),
-                ),
-              ),
             );
           },
         ),

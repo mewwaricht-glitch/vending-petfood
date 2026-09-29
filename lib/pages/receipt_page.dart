@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../theme/app_colors.dart';
-import 'payment_page.dart';
+import '../models/payment_method.dart';
+import '../widgets/receipt_item.dart';
 
 class ReceiptPage extends StatefulWidget {
   final List<CartItem> items;
@@ -104,18 +105,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        ...widget.items.map(
-                          (i) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: Row(
-                              children: [
-                                const SizedBox(width: 10),
-                                Expanded(child: Text('${i.product.name}  x${i.quantity}', style: const TextStyle(fontSize: 15))),
-                                Text('${i.lineTotal} บาท', style: const TextStyle(fontSize: 15)),
-                              ],
-                            ),
-                          ),
-                        ),
+                        ...widget.items.map((i) => ReceiptItem(item: i)),
                         const Divider(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../models/payment_method.dart';
 import '../theme/app_colors.dart';
 import 'cash_payment_page.dart';
 import 'qr_payment_page.dart';
 import 'receipt_page.dart';
-
-enum PaymentMethod { cash, mobilePay }
+import '../widgets/payment_option_card.dart';
 
 class PaymentPage extends StatefulWidget {
   final List<CartItem> items;
@@ -84,14 +84,14 @@ class _PaymentPageState extends State<PaymentPage> {
                         Row(
                           children: [
                             Expanded(
-                              child: _PaymentOptionCard(
+                              child: PaymentOptionCard(
                                 label: 'เงินสด',
                                 onTap: () => _pay(PaymentMethod.cash),
                               ),
                             ),
                             const SizedBox(width: 14),
                             Expanded(
-                              child: _PaymentOptionCard(
+                              child: PaymentOptionCard(
                                 label: 'QR Code\nพร้อมเพย์',
                                 onTap: () => _pay(PaymentMethod.mobilePay),
                               ),
@@ -181,67 +181,6 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _PaymentOptionCard extends StatefulWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _PaymentOptionCard({required this.label, required this.onTap});
-
-  @override
-  State<_PaymentOptionCard> createState() => _PaymentOptionCardState();
-}
-
-class _PaymentOptionCardState extends State<_PaymentOptionCard> {
-  bool _pressed = false;
-
-  void _setPressed(bool value) {
-    if (_pressed != value) setState(() => _pressed = value);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (_) => _setPressed(true),
-      onTapCancel: () => _setPressed(false),
-      onTapUp: (_) => _setPressed(false),
-      onTap: widget.onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 120),
-        height: 110,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: _pressed ? AppColors.basil : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: _pressed ? AppColors.matcha : AppColors.border,
-            width: 1.4,
-          ),
-          boxShadow: _pressed
-              ? [
-                  BoxShadow(
-                    color: AppColors.matcha.withOpacity(0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : null,
-        ),
-        child: AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 120),
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-            color: _pressed ? Colors.white : AppColors.dark,
-          ),
-          textAlign: TextAlign.center,
-          child: Text(widget.label),
-        ),
-      ),
     );
   }
 }
