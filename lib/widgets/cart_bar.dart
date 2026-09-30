@@ -174,7 +174,8 @@ class _CartChip extends StatelessWidget {
                   _stepButton(Icons.remove, onDecrement),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text('${item.quantity}', 
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   _stepButton(Icons.add, onIncrement),
                 ],
@@ -192,7 +193,9 @@ class _CartChip extends StatelessWidget {
       child: Container(
         width: 22,
         height: 22,
-        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.grey.shade400)),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle, 
+          border: Border.all(color: Colors.grey.shade400)),
         child: Icon(icon, size: 13),
       ),
     );

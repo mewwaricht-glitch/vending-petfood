@@ -131,7 +131,7 @@ class _QrPaymentPageState extends State<QrPaymentPage> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
                           ),
                           child: const Text(
-                            'ชำระเงินแล้ว / ตรวจสอบสถานะ',
+                            'ตรวจสอบ',
                             style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ),

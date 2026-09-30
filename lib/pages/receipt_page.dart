@@ -81,13 +81,23 @@ class _ReceiptPageState extends State<ReceiptPage> {
                         Container(
                           width: 84,
                           height: 84,
-                          decoration: const BoxDecoration(color: AppColors.apples, shape: BoxShape.circle),
-                          child: const Icon(Icons.check, color: Colors.white, size: 48),
+                          decoration: const BoxDecoration(
+                            color: AppColors.apples, 
+                            shape: BoxShape.circle),
+                          child: const Icon(Icons.check, 
+                          color: Colors.white, 
+                          size: 48),
                         ),
                         const SizedBox(height: 20),
-                        const Text('ชำระเงินสำเร็จ', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                        const Text('ชำระเงินสำเร็จ', style: TextStyle(
+                          fontSize: 22, 
+                          fontWeight: 
+                          FontWeight.bold)),
                         const SizedBox(height: 6),
-                        Text('วิธีชำระเงิน: $_methodLabel', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+                        Text('วิธีชำระเงิน: $_methodLabel', 
+                        style: TextStyle(
+                          fontSize: 14, 
+                          color: Colors.grey.shade600)),
                         const SizedBox(height: 24),
                         Container(
                           width: double.infinity,
@@ -100,7 +110,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             fit: BoxFit.scaleDown,
                             child: Text(
                               'หมายเลขคำสั่งซื้อ ${widget.orderNumber}',
-                              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.tulip),
+                              style: const TextStyle(
+                                fontSize: 32, 
+                                fontWeight: FontWeight.bold, 
+                                color: AppColors.tulip),
                             ),
                           ),
                         ),
@@ -113,9 +126,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             const Expanded(
                               child: Text('ยอดชำระทั้งหมด',
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold, 
+                                    fontSize: 17)),
                             ),
-                            Text('$total บาท', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 19)),
+                            Text('$total บาท', 
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold, 
+                              fontSize: 19)),
                           ],
                         ),
                         if (widget.method == PaymentMethod.cash && widget.changeGiven > 0) ...[
@@ -126,9 +144,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               const Expanded(
                                 child: Text('เงินทอน',
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 15, color: Colors.grey)),
+                                    style: TextStyle(
+                                      fontSize: 15, 
+                                      color: Colors.grey)),
                               ),
-                              Text('${widget.changeGiven} บาท', style: const TextStyle(fontSize: 15, color: Colors.grey)),
+                              Text('${widget.changeGiven} บาท', 
+                              style: const TextStyle(
+                                fontSize: 15, 
+                                color: Colors.grey)),
                             ],
                           ),
                         ],
@@ -150,7 +173,10 @@ class _ReceiptPageState extends State<ReceiptPage> {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         'ตกลง (กลับหน้าแรกใน $_secondsLeft วินาที)',
-                        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.white, 
+                          fontSize: 16, 
+                          fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),

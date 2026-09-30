@@ -38,7 +38,6 @@ class _PaymentPageState extends State<PaymentPage> {
         if (!mounted || confirmed != true) return;
         await _finishOrder(method);
         return;
-
     }
   }
 
@@ -66,44 +65,47 @@ class _PaymentPageState extends State<PaymentPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildHeader(),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
                 children: [
-                  _buildHeader(),
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                      children: [
-                        _buildOrderSummary(),
-                        const SizedBox(height: 24),
-                        const Text(
-                          'เลือกช่องทางการชำระเงิน',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.dark),
+                  _buildOrderSummary(),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'เลือกช่องทางการชำระเงิน',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: AppColors.dark),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: PaymentOptionCard(
+                          label: 'เงินสด',
+                          onTap: () => _pay(PaymentMethod.cash),
                         ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: PaymentOptionCard(
-                                label: 'เงินสด',
-                                onTap: () => _pay(PaymentMethod.cash),
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: PaymentOptionCard(
-                                label: 'QR Code\nพร้อมเพย์',
-                                onTap: () => _pay(PaymentMethod.mobilePay),
-                              ),
-                            ),
-                          ],
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: PaymentOptionCard(
+                          label: 'QR Code\nพร้อมเพย์',
+                          onTap: () => _pay(PaymentMethod.mobilePay),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -114,11 +116,15 @@ class _PaymentPageState extends State<PaymentPage> {
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back, color: AppColors.dark, size: 26),
-            onPressed: _processing ? null : () => Navigator.of(context).pop(false),
+            onPressed:
+                _processing ? null : () => Navigator.of(context).pop(false),
           ),
           const Text(
             'ชำระเงิน',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.dark),
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.dark),
           ),
         ],
       ),
@@ -129,7 +135,11 @@ class _PaymentPageState extends State<PaymentPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('รายการคำสั่งซื้อ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.dark)),
+        const Text('รายการคำสั่งซื้อ',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: AppColors.dark)),
         const SizedBox(height: 10),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -150,13 +160,19 @@ class _PaymentPageState extends State<PaymentPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(widget.items[i].product.name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+                            Text(widget.items[i].product.name,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 15)),
                             const SizedBox(height: 2),
-                            Text('x${widget.items[i].quantity}', style: const TextStyle(color: AppColors.textGrey, fontSize: 13)),
+                            Text('x${widget.items[i].quantity}',
+                                style: const TextStyle(
+                                    color: AppColors.textGrey, fontSize: 13)),
                           ],
                         ),
                       ),
-                      Text('${widget.items[i].lineTotal} บาท', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                      Text('${widget.items[i].lineTotal} บาท',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 15)),
                     ],
                   ),
                 ),
@@ -175,8 +191,16 @@ class _PaymentPageState extends State<PaymentPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('ยอดชำระทั้งหมด', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
-              Text('$total บาท', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Colors.white)),
+              const Text('ยอดชำระทั้งหมด',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white)),
+              Text('$total บาท',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Colors.white)),
             ],
           ),
         ),

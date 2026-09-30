@@ -13,7 +13,9 @@ class ReceiptItem extends StatelessWidget {
       child: Row(
         children: [
           const SizedBox(width: 10),
-          Expanded(child: Text('${item.product.name}  x${item.quantity}', style: const TextStyle(fontSize: 15))),
+          Expanded(child: Text('${item.product.name}  x${item.quantity}', 
+          style: const TextStyle(
+            fontSize: 15))),
           Text('${item.lineTotal} บาท', style: const TextStyle(fontSize: 15)),
         ],
       ),

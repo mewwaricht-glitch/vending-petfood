@@ -5,14 +5,12 @@ class CategoryTab extends StatelessWidget {
   final String category;
   final bool selected;
   final VoidCallback onTap;
-
   const CategoryTab({
     super.key,
     required this.category,
     required this.selected,
     required this.onTap,
   });
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
